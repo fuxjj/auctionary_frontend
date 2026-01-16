@@ -1,5 +1,33 @@
 const BASE_URL = "http://localhost:3333";
 
+const createItem = (item) => {
+    const token = localStorage.getItem("session_token");
+
+    return fetch(`${BASE_URL}/item`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Authorization": token,
+        },
+        body: JSON.stringify(item),
+    }) .then((response) => {
+        if (response.status === 201 ) {
+            return response.json();
+        } else if (response.status === 400) {
+            return response.json().then((err) => {
+                throw err.error || "Invalid item data";
+            });
+        } else if (response.status === 401) {
+            throw "You must be logged in to create an item";
+        } else {
+            throw "something went wrong";
+        }
+    }).catch((err) => {
+        console.log("Create item error", err);;
+        return Promise.reject(err);
+    })
+}
+
 const searchItems = () => {
     return fetch(`${BASE_URL}/item`)
     .then((response) => {
@@ -60,5 +88,6 @@ const login = (email, password) => {
 export const coreService = {
     searchItems,
     getItem,
-    login
+    login,
+    createItem
 }
