@@ -85,9 +85,31 @@ const login = (email, password) => {
     })
 }
 
+const logout = () => {
+    const token = localStorage.getItem("session_token");
+
+    return fetch (`${BASE_URL}/logout`, {
+        method: "POST",
+        headers: {
+            "X-Authorization": token,
+        },
+    }).then((response) => {
+        if (response.status === 200) {
+            return;
+        } else if (response.status === 401) {
+            throw "not logged in"
+        } else {
+            throw "Something went wrong";
+        }
+    }).catch((err) => {
+        console.log("Logout error: ", err);
+        return Promise.reject(err);
+    })
+}
 export const coreService = {
     searchItems,
     getItem,
     login,
-    createItem
+    createItem,
+    logout
 }
