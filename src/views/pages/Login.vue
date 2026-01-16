@@ -18,6 +18,8 @@
 </template>
 
 <script>
+    import { coreService } from "../../services/core.service"
+
     export default {
         data() {
             return {
@@ -29,27 +31,26 @@
         },
 
         methods: {
-            handleSubmit(e) {
+            async handleSubmit() {
                 this.submitted = true;
                 this.error = "";
 
-                const {email, password} = this
+                if(!this.email || !this.password) return;
 
-                if(!(email && password)) {
-                    return;
-                }
+                const email = this.email.trim();
 
-                if (!email.includes("@")) {
-                    this.error = "Email must be valid.";
-                    return;
-                }
+                try {
+                    const res = await coreService.login(this.email, this.password);
 
-                const passwordPattern = /^(?=.*[0-9])(?=.*[A-Z]).{8,}$/;
-                if (!passwordPattern.test(password)) {
-                    this.error("Password not strong enough!");
-                    return;
-                }
+                    localStorage.setItem("user_id", res.user_id);
+                    localStorage.setItem("session_token", res.session_token);
+
+                    this.$router.push("/")
+                } catch (err) {
+                this.error = err;
             }
+
+            } 
         }
     }
 </script>
