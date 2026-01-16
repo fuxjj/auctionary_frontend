@@ -2,9 +2,9 @@
   <div>
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/login" v-if="!isLoggedIn">Login</router-link> |
-      <router-link to="/item" v-if="!isLoggedIn">Create Item</router-link>
-      <button v-if="!isLoggedIn" @click="handleLogout">Logout</button>
+      <router-link to="/login" >Login</router-link> |
+      <router-link to="/item" >Create Item</router-link>
+      <button  @click="handleLogout">Logout</button>
     </nav>
 
     <router-view />
